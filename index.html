@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Frederik — Life OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f2f5;--white:#fff;--border:#e9edef;--border2:#d1d7db;
+  --green:#00a884;--gl:#d9fdd3;--gd:#008069;
+  --blue:#027eb5;--bl:#e7f3ff;
+  --orange:#f57c00;--ol:#fff3e0;
+  --red:#e53935;--rl:#ffebee;
+  --purple:#7c3aed;--pl:#f3eeff;
+  --teal:#0891b2;--tl:#ecfeff;
+  --yellow:#d97706;--yl:#fffbeb;
+  --pink:#db2777;--pkl:#fdf2f8;
+  --text:#111b21;--text2:#3b4a54;--muted:#667781;--muted2:#8696a0;
+  --nav-h:60px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;height:100%;overflow:hidden;-webkit-font-smoothing:antialiased}
+.app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;background:var(--bg)}
+/* HEADER */
+.hdr{height:56px;background:var(--gd);display:flex;align-items:center;padding:0 16px;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,.15);flex-shrink:0}
+.hav{width:38px;height:38px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0}
+.hin{flex:1}.hn{font-size:16px;font-weight:700;color:#fff;line-height:1.2}.hs{font-size:11px;color:rgba(255,255,255,.7);margin-top:1px}
+.hd{font-size:11px;color:rgba(255,255,255,.8);font-weight:600;text-align:right;line-height:1.4}
+/* SCREENS */
+.scr{display:none;flex:1;overflow-y:auto;padding-bottom:calc(var(--nav-h)+8px);overscroll-behavior:contain}
+.scr.active{display:block}
+.scr::-webkit-scrollbar{width:0}
+/* NAV */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:var(--nav-h);background:var(--white);border-top:1px solid var(--border);display:flex;align-items:center;z-index:999}
+.nb{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:5px 4px;flex:1}
+.nbi{font-size:19px;line-height:1;filter:grayscale(1) opacity(.35);transition:all .15s}
+.nbl{font-size:8px;font-weight:700;color:var(--muted2);letter-spacing:.2px;text-transform:uppercase;transition:color .15s}
+.nb.active .nbi{filter:none}.nb.active .nbl{color:var(--gd)}
+/* CARDS */
+.card{background:var(--white);margin:0 8px 8px;border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+/* SECTION HEADER */
+.sh{padding:14px 16px 6px;display:flex;align-items:center;gap:8px}
+.sht{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--gd)}
+.shl{flex:1;height:1px;background:var(--border2)}
+/* CHECKLIST */
+.ci{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;-webkit-user-select:none;transition:background .1s}
+.ci:last-child{border-bottom:none}.ci:active{background:var(--bg)}.ci.done{opacity:.4}
+.chk{width:20px;height:20px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s;background:#fff}
+.ci.done .chk{background:var(--green);border-color:var(--green)}
+.ci.done .chk::after{content:'';width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px);display:block}
+.cw{flex:1}.cm{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}.cs{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4}
+/* STATS */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 8px 0}
+.sb{background:var(--white);border-radius:12px;padding:14px;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.sl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;font-weight:700}
+.sv{font-size:28px;font-weight:800;line-height:1;color:var(--gd)}
+.sv.b{color:var(--blue)}.sv.o{color:var(--orange)}.sv.g{color:var(--text2)}.sv.p{color:var(--purple)}.sv.pk{color:var(--pink)}
+.su{font-size:11px;color:var(--muted);margin-top:3px}
+/* PROGRESS */
+.pi{padding:10px 14px;border-bottom:1px solid var(--border)}.pi:last-child{border-bottom:none}
+.pt{display:flex;justify-content:space-between;margin-bottom:5px}
+.pn{font-size:13px;font-weight:600}.pp{font-size:12px;color:var(--muted);font-weight:700}
+.pb{height:4px;background:var(--bg);border-radius:2px;overflow:hidden}
+.pf{height:100%;border-radius:2px;background:var(--green)}
+.pf.b{background:var(--blue)}.pf.o{background:var(--orange)}.pf.p{background:var(--purple)}.pf.pk{background:var(--pink)}
+/* ROW ITEMS */
+.ri{display:flex;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border);gap:10px}
+.ri:last-child{border-bottom:none}
+.rl{flex:1}.rn{font-size:13px;font-weight:600}.rs{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4}
+.rr{font-size:12px;color:var(--muted2);font-weight:700;text-align:right;white-space:nowrap}
+.rr.g{color:var(--gd)}.rr.o{color:var(--orange)}.rr.b{color:var(--blue)}.rr.p{color:var(--purple)}.rr.r{color:var(--red)}.rr.pk{color:var(--pink)}
+/* SESSIONS */
+.sess{background:var(--white);margin:0 8px 8px;border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.shdr{padding:13px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.shdr:active{background:var(--bg)}
+.stag{font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0}
+.sname{font-size:15px;font-weight:700;flex:1}.sarr{color:var(--muted2);font-size:11px;transition:transform .2s}
+.sess.open .sarr{transform:rotate(180deg)}.sbody{display:none;border-top:1px solid var(--border)}.sess.open .sbody{display:block}
+.er{display:grid;grid-template-columns:1fr auto auto;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border);align-items:center}
+.er:last-child{border-bottom:none}
+.en{font-size:13px;font-weight:700}.eno{font-size:11px;color:var(--muted);margin-top:2px}
+.es{font-size:13px;font-weight:800;color:var(--gd);white-space:nowrap}
+.erpe{font-size:11px;color:var(--muted2);background:var(--bg);padding:2px 6px;border-radius:6px;white-space:nowrap}
+/* NOTES */
+.note{margin:0 8px 8px;padding:10px 14px;background:var(--gl);border-left:3px solid var(--green);border-radius:0 10px 10px 0;font-size:12px;color:var(--text2);line-height:1.6}
+.note.o{background:var(--ol);border-left-color:var(--orange)}.note.b{background:var(--bl);border-left-color:var(--blue)}
+.note.r{background:var(--rl);border-left-color:var(--red)}.note.p{background:var(--pl);border-left-color:var(--purple)}
+.note.y{background:var(--yl);border-left-color:var(--yellow)}.note.t{background:var(--tl);border-left-color:var(--teal)}
+.note.pk{background:var(--pkl);border-left-color:var(--pink)}
+/* MACROS */
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 8px 0}
+.mp{background:var(--white);border-radius:10px;padding:10px 6px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.mv{font-size:18px;font-weight:800;line-height:1}.mlb{font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px;letter-spacing:.3px}
+/* SKIN STEPS */
+.sstep{display:flex;gap:12px;padding:10px 14px;border-bottom:1px solid var(--border);align-items:flex-start}
+.sstep:last-child{border-bottom:none}
+.snum{width:22px;height:22px;border-radius:50%;background:var(--gl);color:var(--gd);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.sn{font-size:13px;font-weight:700}.sd{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4}
+/* BADGES */
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;letter-spacing:.4px;text-transform:uppercase}
+.bg{background:var(--gl);color:var(--gd)}.bb{background:var(--bl);color:var(--blue)}
+.bo{background:var(--ol);color:var(--orange)}.bgr{background:var(--bg);color:var(--muted)}
+.br{background:var(--rl);color:var(--red)}.bp{background:var(--pl);color:var(--purple)}
+.bpk{background:var(--pkl);color:var(--pink)}
+/* WEEK */
+.wr{display:grid;grid-template-columns:36px 1fr 1fr;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);align-items:center}
+.wr:last-child{border-bottom:none}
+.wd{font-size:12px;font-weight:800;color:var(--muted)}.wd.today{color:var(--gd)}
+.wt{font-size:12px;font-weight:500}.wb{font-size:11px;color:var(--muted)}
+/* RING */
+.ring-wrap{display:flex;align-items:center;gap:14px;padding:14px}
+.rw{position:relative;width:68px;height:68px;flex-shrink:0}.rw svg{transform:rotate(-90deg)}
+.rc{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--gd)}
+.ri2{flex:1}.rt{font-size:15px;font-weight:700}.rsub{font-size:12px;color:var(--muted);margin-top:3px}
+/* QUOTE */
+.qcard{background:var(--gd);margin:8px 8px 0;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,128,105,.2)}
+.qtext{font-size:13px;font-weight:600;color:#fff;line-height:1.6;font-style:italic}
+.qauthor{font-size:11px;color:rgba(255,255,255,.6);margin-top:8px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+/* LANG CARD */
+.lang-card{background:var(--white);margin:0 8px 8px;border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.lang-hdr{padding:14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.lang-flag{font-size:28px;line-height:1}
+.lang-title{font-size:16px;font-weight:800;flex:1}
+.lang-level{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.spacer{height:12px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="hdr">
+  <div class="hav">F</div>
+  <div class="hin">
+    <div class="hn">Frederik — Life OS</div>
+    <div class="hs">73 kg → 69 kg · Neustart Juni 2026</div>
+  </div>
+  <div class="hd" id="hdate"></div>
+</div>
+
+<!-- ══════════ HEUTE ══════════ -->
+<div id="s-heute" class="scr active">
+  <div class="qcard"><div class="qtext" id="q-text"></div><div class="qauthor" id="q-author"></div></div>
+  <div style="padding:8px 8px 0">
+    <div class="card">
+      <div class="ring-wrap">
+        <div class="rw">
+          <svg width="68" height="68" viewBox="0 0 68 68">
+            <circle cx="34" cy="34" r="28" fill="none" stroke="#e9edef" stroke-width="5"/>
+            <circle cx="34" cy="34" r="28" fill="none" stroke="#00a884" stroke-width="5" stroke-dasharray="175.9" stroke-dashoffset="175.9" stroke-linecap="round" id="ring-c"/>
+          </svg>
+          <div class="rc" id="ring-pct">0%</div>
+        </div>
+        <div class="ri2">
+          <div class="rt">Tages-Fortschritt</div>
+          <div class="rsub" id="ring-sub">0 von 0 erledigt</div>
+          <div style="margin-top:6px" id="streak-display"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sh"><div class="sht">☀️ Morgenroutine</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="ci" onclick="tc(this,'m1')" id="m1"><div class="chk"></div><div class="cw"><div class="cm">Aufstehen & Wiegen</div><div class="cs">Nüchtern, nach WC — immer gleiche Bedingungen</div></div></div>
+    <div class="ci" onclick="tc(this,'m2')" id="m2"><div class="chk"></div><div class="cw"><div class="cm">Fenster auf — Morgensonne</div><div class="cs">10 min Tageslicht ins Gesicht · Cortisol + Circadian Rhythm regulieren</div></div></div>
+    <div class="ci" onclick="tc(this,'m3')" id="m3"><div class="chk"></div><div class="cw"><div class="cm">500ml Wasser trinken</div><div class="cs">Direkt nach Aufstehen · Hydration nach dem Schlaf</div></div></div>
+    <div class="ci" onclick="tc(this,'m4')" id="m4"><div class="chk"></div><div class="cw"><div class="cm">Morning Skincare</div><div class="cs">Cleanser → Niacinamide → Moisturizer → SPF 50</div></div></div>
+    <div class="ci" onclick="tc(this,'m5')" id="m5"><div class="chk"></div><div class="cw"><div class="cm">Biotin</div><div class="cs">Mit dem Frühstück</div></div></div>
+    <div class="ci" onclick="tc(this,'m6')" id="m6"><div class="chk"></div><div class="cw"><div class="cm">Movement Quality — 10 min</div><div class="cs">Chin Tucks · Wall Slides · Pec Stretch · Thoracic Ext · Side Rotation · Haltungsfundament täglich</div></div></div>
+    <div class="ci" onclick="tc(this,'m7')" id="m7"><div class="chk"></div><div class="cw"><div class="cm">Frühstück tracken</div><div class="cs">Müsli · Kalorien + Protein eintragen</div></div></div>
+    <div class="ci" onclick="tc(this,'m8')" id="m8"><div class="chk"></div><div class="cw"><div class="cm">Mewing aktivieren</div><div class="cs">Zunge an Gaumen · Nasenatmung · ganzen Tag halten</div></div></div>
+    <div class="ci" onclick="tc(this,'m9')" id="m9"><div class="chk"></div><div class="cw"><div class="cm">3 Dinge für die du dankbar bist</div><div class="cs">30s · verändert neuronale Muster nach 21 Tagen nachweislich</div></div></div>
+    <div class="ci" onclick="tc(this,'m10')" id="m10"><div class="chk"></div><div class="cw"><div class="cm">Tagesintention setzen</div><div class="cs">"Heute will ich..." · 1 Satz · Fokus vor dem Chaos</div></div></div>
+  </div>
+
+  <div class="sh"><div class="sht">🧠 Mental & Fokus</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="ci" onclick="tc(this,'mf1')" id="mf1"><div class="chk"></div><div class="cw"><div class="cm">Box Breathing — 5 min</div><div class="cs">4s ein · 4s halten · 4s aus · 4s halten · Cortisol ↓ · Nervensystem beruhigen</div></div></div>
+    <div class="ci" onclick="tc(this,'mf2')" id="mf2"><div class="chk"></div><div class="cw"><div class="cm">Handy 1h nach Aufstehen meiden</div><div class="cs">Kein Social Media bis Routine fertig · Dopamin-System schützen</div></div></div>
+    <div class="ci" onclick="tc(this,'mf3')" id="mf3"><div class="chk"></div><div class="cw"><div class="cm">1 wichtige Aufgabe identifizieren</div><div class="cs">Die EINE Sache die heute zählt — Thesis / Uni / Projekt</div></div></div>
+    <div class="ci" onclick="tc(this,'mf4')" id="mf4"><div class="chk"></div><div class="cw"><div class="cm">10 min Sprache lernen (Duolingo / Anki)</div><div class="cs">Spanisch ODER Japanisch · täglich reicht · Konsistenz schlägt Intensität</div></div></div>
+  </div>
+
+  <div class="sh"><div class="sht">🚶 Aktivität & NEAT</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="ci" onclick="tc(this,'t1')" id="t1"><div class="chk"></div><div class="cw"><div class="cm">Zur Uni laufen (10 min)</div><div class="cs">Täglich zu Fuß statt Transport · ~80–100 kcal extra · keine Anstrengung nötig</div></div></div>
+    <div class="ci" onclick="tc(this,'t2')" id="t2"><div class="chk"></div><div class="cw"><div class="cm">Zum Studio laufen (15 min)</div><div class="cs">Beide Wege = 30 min · ~200 kcal · ist bereits gutes Cardio als Warm-up</div></div></div>
+    <div class="ci" onclick="tc(this,'t3')" id="t3"><div class="chk"></div><div class="cw"><div class="cm">≥ 8.000 Schritte</div><div class="cs">Treppen · zu Fuß statt Fahrt · kurze Umwege · NEAT ist der größte Hebel</div></div></div>
+    <div class="ci" onclick="tc(this,'t4')" id="t4"><div class="chk"></div><div class="cw"><div class="cm">2,5L Wasser</div><div class="cs">Aktiv erhöhen · mehr an Trainingstagen</div></div></div>
+    <div class="ci" onclick="tc(this,'t5')" id="t5"><div class="chk"></div><div class="cw"><div class="cm">Mittag tracken</div><div class="cs">Wrap · ~450 kcal · 35g P</div></div></div>
+    <div class="ci" onclick="tc(this,'t6')" id="t6"><div class="chk"></div><div class="cw"><div class="cm">Training oder bewusster Ruhetag</div><div class="cs">Aktive Entscheidung — kein "vielleicht"</div></div></div>
+    <div class="ci" onclick="tc(this,'t7')" id="t7"><div class="chk"></div><div class="cw"><div class="cm">1 Pomodoro Thesis (25 min)</div><div class="cs">5-4-3-2-1 starten · kein Handy · Uni wird fertig durch tägliche 25 min</div></div></div>
+    <div class="ci" onclick="tc(this,'t8')" id="t8"><div class="chk"></div><div class="cw"><div class="cm">Social Media max. 30 min</div><div class="cs">Timer setzen · bewusst statt endlos</div></div></div>
+  </div>
+
+  <div class="sh"><div class="sht">🌙 Abendroutine</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="ci" onclick="tc(this,'a1')" id="a1"><div class="chk"></div><div class="cw"><div class="cm">Abendessen tracken</div><div class="cs">Meal Prep · ~850 kcal · 70g P · Fett ≥ 50g prüfen</div></div></div>
+    <div class="ci" onclick="tc(this,'a2')" id="a2"><div class="chk"></div><div class="cw"><div class="cm">Zähne putzen + Flossen + Zungenreiniger</div><div class="cs">2 min elektrisch · täglich konsequent</div></div></div>
+    <div class="ci" onclick="tc(this,'a3')" id="a3"><div class="chk"></div><div class="cw"><div class="cm">Evening Skincare</div><div class="cs">Double Cleanse → Niacinamide → Moisturizer → Lip Balm</div></div></div>
+    <div class="ci" onclick="tc(this,'a4')" id="a4"><div class="chk"></div><div class="cw"><div class="cm">Zinc (abends)</div><div class="cs">2h nach Mahlzeit · nicht mit Eisen</div></div></div>
+    <div class="ci" onclick="tc(this,'a5')" id="a5"><div class="chk"></div><div class="cw"><div class="cm">Tagesreflexion — 2 min</div><div class="cs">Was lief gut? Was anders? Wachstum bewusst machen</div></div></div>
+    <div class="ci" onclick="tc(this,'a6')" id="a6"><div class="chk"></div><div class="cw"><div class="cm">Morgen vorbereiten</div><div class="cs">Essen bereit · Trainingstag bekannt · 1 Aufgabe notiert</div></div></div>
+    <div class="ci" onclick="tc(this,'a7')" id="a7"><div class="chk"></div><div class="cw"><div class="cm">Handy weg — 21:30 Uhr</div><div class="cs">Blaulicht blockiert Melatonin · Schlafqualität ↑</div></div></div>
+    <div class="ci" onclick="tc(this,'a8')" id="a8"><div class="chk"></div><div class="cw"><div class="cm">Vor Mitternacht schlafen</div><div class="cs">Schrittweise früher · jede Woche 15 min früher als Ziel</div></div></div>
+  </div>
+
+  <div class="sh"><div class="sht">📅 Heute Extra</div><div class="shl"></div></div>
+  <div class="card" id="daily-extras"></div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ══════════ KÖRPER ══════════ -->
+<div id="s-koerper" class="scr">
+  <div class="sg">
+    <div class="sb"><div class="sl">Gewicht</div><div class="sv">73</div><div class="su">kg · Ziel 69 kg</div></div>
+    <div class="sb"><div class="sl">KFA</div><div class="sv o">21.4</div><div class="su">% · April 2026</div></div>
+    <div class="sb"><div class="sl">Klimmzüge</div><div class="sv b">4</div><div class="su">Wdh BW → 10</div></div>
+    <div class="sb"><div class="sl">NEAT täglich</div><div class="sv g">~5k</div><div class="su">Schritte → 8k+</div></div>
+  </div>
+
+  <div class="sh"><div class="sht">🎯 Ziele</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="pi"><div class="pt"><span class="pn">Gewicht 73 → 69 kg</span><span class="pp">0%</span></div><div class="pb"><div class="pf" style="width:0%"></div></div></div>
+    <div class="pi"><div class="pt"><span class="pn">Klimmzüge 4 → 10 Wdh</span><span class="pp">40%</span></div><div class="pb"><div class="pf b" style="width:40%"></div></div></div>
+    <div class="pi"><div class="pt"><span class="pn">5 km nonstop laufen</span><span class="pp">30%</span></div><div class="pb"><div class="pf o" style="width:30%"></div></div></div>
+    <div class="pi"><div class="pt"><span class="pn">Movement Quality / Haltung</span><span class="pp">20%</span></div><div class="pb"><div class="pf p" style="width:20%"></div></div></div>
+    <div class="pi"><div class="pt"><span class="pn">Schritte 5k → 8k/Tag</span><span class="pp">60%</span></div><div class="pb"><div class="pf" style="width:60%"></div></div></div>
+    <div class="pi"><div class="pt"><span class="pn">Spanisch — Grundlagen</span><span class="pp">5%</span></div><div class="pb"><div class="pf pk" style="width:5%"></div></div></div>
+    <div class="pi"><div class="pt"><span class="pn">Japanisch — Hiragana</span><span class="pp">0%</span></div><div class="pb"><div class="pf pk" style="width:0%"></div></div></div>
+  </div>
+
+  <div class="sh"><div class="sht">📋 Wochenplan</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="wr"><div class="wd" id="wd-mo">MO</div><div class="wt"><span class="badge bg">Push</span></div><div class="wb">Gua Sha · Wiegen · E-Bike?</div></div>
+    <div class="wr"><div class="wd" id="wd-di">DI</div><div class="wt"><span class="badge bb">Pull + Run</span></div><div class="wb">BHA Peeling · Studio zu Fuß</div></div>
+    <div class="wr"><div class="wd" id="wd-mi">MI</div><div class="wt"><span class="badge bo">Beine</span></div><div class="wb">Gua Sha · Haare · Meal Prep</div></div>
+    <div class="wr"><div class="wd" id="wd-do">DO</div><div class="wt"><span class="badge bgr">Uni / Rest</span></div><div class="wb">BHA + Whitening · Spaziergang</div></div>
+    <div class="wr"><div class="wd" id="wd-fr">FR</div><div class="wt"><span class="badge bgr">Optional</span></div><div class="wb">Gua Sha · Haare · E-Bike nutzen</div></div>
+    <div class="wr"><div class="wd" id="wd-sa">SA</div><div class="wt"><span class="badge bgr">Tag D opt.</span></div><div class="wb">Whitening</div></div>
+    <div class="wr"><div class="wd" id="wd-so">SO</div><div class="wt"><span class="badge bgr">Rest</span></div><div class="wb">Gua Sha · Haare · Meal Prep · Reflexion</div></div>
+  </div>
+
+  <div class="note o">⚠️ Woche 1 = Kalibrierung. –10–15% Gewicht. RPE max 7. Kein Versagen. Bewegungsqualität Priorität.</div>
+
+  <div class="sh"><div class="sht">🏃 Aktivität & Fettabbau</div><div class="shl"></div></div>
+  <div class="note">Strategie: Minimales Defizit (~200 kcal) + maximale Aktivität. Uni + Studio zu Fuß = täglich ~300 kcal extra ohne Aufwand.</div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">Uni zu Fuß (10 min × 2)</div><div class="rs">~80–100 kcal · täglich · keine Ausrede</div></div><div class="rr g">täglich</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Studio zu Fuß (15 min × 2)</div><div class="rs">~150–200 kcal · Warm-up + Cool-down inklusive</div></div><div class="rr g">4×/Woche</div></div>
+    <div class="ri"><div class="rl"><div class="rn">E-Bike nutzen (statt Transport)</div><div class="rs">~100–200 kcal · frische Luft · Morgensonne</div></div><div class="rr o">2–3×/Woche</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Abendspaziergang 20 min</div><div class="rs">~80 kcal · Cortisol ↓ · Schlaf ↑ · Verdauung ↑</div></div><div class="rr" style="color:var(--muted2)">optional</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Gesamt extra NEAT/Tag</div><div class="rs">300–500 kcal extra täglich · ohne Diät-Gefühl</div></div><div class="rr b">Ziel</div></div>
+  </div>
+
+  <div class="sh"><div class="sht">💪 Training — 6 Säulen</div><div class="shl"></div></div>
+  <div class="note b">Adaptiert nach wissenschaftlichem Trainings-Framework: Movement Quality → Strength → Power → Endurance → Flexibility → Skills</div>
+
+  <div class="sess open" id="sb-a">
+    <div class="shdr" onclick="tS('sb-a')"><span class="stag bg">MO</span><span class="sname">Tag A — Push (Hypertrophie)</span><span class="sarr">▼</span></div>
+    <div class="sbody">
+      <div class="er"><div><div class="en">Machine Chest Press</div><div class="eno">Schulterblätter zurück + runter · Hypertrophie-Fokus</div></div><div class="es">4×8–10</div><div class="erpe">RPE 7–8</div></div>
+      <div class="er"><div><div class="en">Incline Dumbbell Press</div><div class="eno">30–45° · obere Brust</div></div><div class="es">3×10–12</div><div class="erpe">RPE 7</div></div>
+      <div class="er"><div><div class="en">Seated Machine Press</div><div class="eno">Schultern · kein Nackeneinzug</div></div><div class="es">3×10–12</div><div class="erpe">RPE 7</div></div>
+      <div class="er"><div><div class="en">Lateral Raise (Cable)</div><div class="eno">Ellbogen führt · leicht vorgebeugt</div></div><div class="es">4×12–15</div><div class="erpe">RPE 7</div></div>
+      <div class="er"><div><div class="en">Pec Dec</div><div class="eno">Volle Dehnung · kein Schwung</div></div><div class="es">3×12</div><div class="erpe">RPE 7</div></div>
+      <div class="er"><div><div class="en">Tricep Pushdown</div></div><div class="es">3×12–15</div><div class="erpe">RPE 7</div></div>
+      <div class="er"><div><div class="en">Overhead Tricep Ext</div><div class="eno">Langer Kopf · volle Dehnung</div></div><div class="es">2×12</div><div class="erpe">RPE 6–7</div></div>
+      <div style="padding:10px 14px;font-size:12px;color:var(--muted);border-top:1px solid var(--border)">🧠 Core: Plank 3×30s · Hanging Leg Raise 3×8 | 🔧 Movement: Scapula Push-Ups 2×10</div>
+    </div>
+  </div>
+
+  <div class="sess" id="sb-b">
+    <div class="shdr" onclick="tS('sb-b')"><span class="stag bb">DI</span><span class="sname">Tag B — Pull + Ausdauer</span><span class="sarr">▼</span></div>
+    <div class="sbody">
+      <div class="er"><div><div class="en">Pull Ups (BW)</div><div class="eno">Volle ROM · Calisthenics + Kraft Prio</div></div><div class="es">4×max</div><div class="erpe">RPE 8</div></div>
+      <div class="er"><div><div class="en">Lat Pulldown (Neutral)</div><div class="eno">Schulterbreiter Griff · Lat zieht</div></div><div class="es">3×10–12</div><div class="erpe">RPE 7–8</div></div>
+      <div class="er"><div><div class="en">Chest Supported Row</div><div class="eno">Brust liegt an · kein Schaukeln</div></div><div class="es">4×10</div><div class="erpe">RPE 7–8</div></div>
+      <div class="er"><div><div class="en">Cable Row (seated)</div><div class="eno">Ellbogen eng am Körper</div></div><div class="es">3×12</div><div class="erpe">RPE 7</div></div>
+      <div class="er"><div><div class="en">Straight Arm Pulldown</div><div class="eno">Lat Isolation · Arme gestreckt</div></div><div class="es">3×12–15</div><div class="erpe">RPE 7</div></div>
+      <div class="er"><div><div class="en">Rear Delt Machine Fly</div><div class="eno">Hintere Schulter · langsam</div></div><div class="es">3×15</div><div class="erpe">RPE 6–7</div></div>
+      <div class="er"><div><div class="en">Barbell Curl</div></div><div class="es">3×10</div><div class="erpe">RPE 7</div></div>
+      <div style="padding:10px 14px;font-size:12px;color:var(--blue);border-top:1px solid var(--border)">🏃 Ausdauer: 20–25 min Zone 2 · ~120–130 bpm · muskuläre + kardiovaskuläre Endurance</div>
+    </div>
+  </div>
+
+  <div class="sess" id="sb-c">
+    <div class="shdr" onclick="tS('sb-c')"><span class="stag bo">MI</span><span class="sname">Tag C — Beine + Core</span><span class="sarr">▼</span></div>
+    <div class="sbody">
+      <div class="er"><div><div class="en">Hack Squat</div><div class="eno">Tiefe ROM · schulterbreiter Stand</div></div><div class="es">4×8–10</div><div class="erpe">RPE 7–8</div></div>
+      <div class="er"><div><div class="en">Leg Press</div><div class="eno">Reentry: 100 kg (–20%)</div></div><div class="es">3×10</div><div class="erpe">RPE 7</div></div>
+      <div class="er"><div><div class="en">Romanian Deadlift</div><div class="eno">Hüfte zurück · Rücken neutral</div></div><div class="es">3×10–12</div><div class="erpe">RPE 7–8</div></div>
+      <div class="er"><div><div class="en">Leg Curl (seated)</div></div><div class="es">3×12</div><div class="erpe">RPE 7</div></div>
+      <div class="er"><div><div class="en">Bulgarian Split Squat</div><div class="eno">BW oder leichte KH · Bewegungsqualität</div></div><div class="es">3×10/S</div><div class="erpe">RPE 7</div></div>
+      <div class="er"><div><div class="en">Standing Calf Raise</div><div class="eno">Volle ROM · langsam eccentric</div></div><div class="es">4×15</div><div class="erpe">RPE 7</div></div>
+      <div style="padding:10px 14px;font-size:12px;color:var(--orange);border-top:1px solid var(--border)">🧠 Core: Cable Crunch 3×15 · Landmine Rotation 3×10/S · Plank 2×40s</div>
+    </div>
+  </div>
+
+  <div class="sess" id="sb-d">
+    <div class="shdr" onclick="tS('sb-d')"><span class="stag bgr">VAR</span><span class="sname">Tag D — Power + Intervall</span><span class="sarr">▼</span></div>
+    <div class="sbody">
+      <div style="padding:10px 14px;font-size:12px;color:var(--purple);border-bottom:1px solid var(--border)">⚡ Power-Fokus: explosive Bewegungen · Plyometrie · schnelle Kraft</div>
+      <div class="er"><div><div class="en">Conventional Deadlift</div><div class="eno">Voller Zug · Kraft + Posterior Chain</div></div><div class="es">4×6–8</div><div class="erpe">RPE 8</div></div>
+      <div class="er"><div><div class="en">Jump Squats / Box Jumps</div><div class="eno">Explosiv abspringen · sanft landen · Power Training</div></div><div class="es">3×8</div><div class="erpe">RPE 7</div></div>
+      <div class="er"><div><div class="en">Incline Dumbbell Press</div></div><div class="es">3×10</div><div class="erpe">RPE 7</div></div>
+      <div class="er"><div><div class="en">Single Arm Pulldown</div><div class="eno">Einseitig · Lat Fokus</div></div><div class="es">3×12/S</div><div class="erpe">RPE 7</div></div>
+      <div class="er"><div><div class="en">Lateral Raise (Cable)</div></div><div class="es">3×15</div><div class="erpe">RPE 7</div></div>
+      <div class="er"><div><div class="en">Cable Curl</div></div><div class="es">3×12</div><div class="erpe">RPE 7</div></div>
+      <div style="padding:10px 14px;font-size:12px;color:var(--muted);border-top:1px solid var(--border)">🏃 Intervall: 5 min Warm-up → 6× (1 min schnell / 2 min locker) → 5 min Cool-down</div>
+    </div>
+  </div>
+
+  <div class="sh"><div class="sht">🧘 Movement Quality — täglich</div><div class="shl"></div></div>
+  <div class="note p">Säule 1 des Trainings: Form · Kontrolle · Alignment. Täglich 10 min reichen für langfristige Haltungskorrektur.</div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">Chin Tucks</div><div class="rs">3×10 · Kinn nach hinten · Forward Head Korrektur</div></div><div class="rr">3×10</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Wall Slides</div><div class="rs">3×10 · Rücken + Arme an Wand · links extra betonen</div></div><div class="rr">3×10</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Pec Stretch</div><div class="rs">Türrahmen · 2×30s je Seite</div></div><div class="rr">2×30s</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Thoracic Extension</div><div class="rs">Über Schaumrolle oder Stuhl</div></div><div class="rr">10 Wdh</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Side-Lying Rotation</div><div class="rs">Knie gestapelt · je Seite · langsam</div></div><div class="rr">10/S</div></div>
+  </div>
+
+  <div class="sh"><div class="sht">🔄 Flexibility — nach Training</div><div class="shl"></div></div>
+  <div class="note t">Säule 5: statisches + dynamisches Dehnen. Immer nach dem Training oder an Regenerationstagen — nie davor kalt.</div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">Hip Flexor Stretch</div><div class="rs">60s je Seite · Knie auf Boden · Becken vorschie­ben</div></div><div class="rr">60s/S</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Hamstring Stretch</div><div class="rs">60s je Seite · Knie leicht gebeugt · nicht federn</div></div><div class="rr">60s/S</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Shoulder Cross-Body Stretch</div><div class="rs">30s je Seite · hintere Schulter</div></div><div class="rr">30s/S</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Lat Stretch (am Rahmen)</div><div class="rs">30s je Seite · Seitneigung</div></div><div class="rr">30s/S</div></div>
+  </div>
+
+  <div class="sh"><div class="sht">⚡ Schulter-Asymmetrie 3×/Woche</div><div class="shl"></div></div>
+  <div class="note b">Linke Schulter tiefer + schwächer. Serratus Anterior + Lower Trap links gezielt aktivieren.</div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">Scapula Push Ups</div><div class="rs">Arme gestreckt · Schulterblätter aus/zusammen</div></div><div class="rr">3×10</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Band Pull-Aparts</div><div class="rs">Schulterblätter zusammen · langsam</div></div><div class="rr">3×15</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Serratus Wall Slides (L extra)</div><div class="rs">Links 2 Extrasätze</div></div><div class="rr">3×10</div></div>
+  </div>
+  <div class="note o">Empfehlung: Physiotherapeut für Schulterasymmetrie — strukturelle Ursachen ausschließen.</div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ══════════ ERNÄHRUNG ══════════ -->
+<div id="s-ernaehrung" class="scr">
+  <div class="mg">
+    <div class="mp"><div class="mv" style="color:var(--gd)">2100</div><div class="mlb">kcal</div></div>
+    <div class="mp"><div class="mv" style="color:var(--blue)">165g</div><div class="mlb">Protein</div></div>
+    <div class="mp"><div class="mv" style="color:var(--text2)">220g</div><div class="mlb">Carbs</div></div>
+    <div class="mp"><div class="mv" style="color:var(--orange)">65g</div><div class="mlb">Fett</div></div>
+  </div>
+  <div class="note" style="margin-top:8px">Kalorien auf 2100 erhöht (war 1950) da Aktivität stark steigt. Defizit entsteht durch Bewegung (~300 kcal), nicht durch Hunger.</div>
+  <div class="note r">⚠️ Fett NICHT unter 55g. Hormone, Gehirn, Haut und Testosteron brauchen gesunde Fette täglich.</div>
+
+  <div class="sh"><div class="sht">🍽 Mahlzeiten</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">🌅 Frühstück — Müsli</div><div class="rs">~450 kcal · 35g P · 55g KH · 12g F</div></div><div class="rr">morgens</div></div>
+    <div class="ri"><div class="rl"><div class="rn">🥙 Mittag — Wrap</div><div class="rs">~500 kcal · 40g P · 50g KH · 14g F</div></div><div class="rr">12:30</div></div>
+    <div class="ri"><div class="rl"><div class="rn">🍌 Banane Pre-Workout</div><div class="rs">~100 kcal · 25g KH · schnelle Energie</div></div><div class="rr g">30 min vor</div></div>
+    <div class="ri"><div class="rl"><div class="rn">🥤 Protein Shake</div><div class="rs">~150 kcal · 30g P · direkt nach Training</div></div><div class="rr b">post-WO</div></div>
+    <div class="ri"><div class="rl"><div class="rn">🍽 Abendessen — Meal Prep</div><div class="rs">~900 kcal · 70g P · 75g KH · 38g F</div></div><div class="rr">19:00</div></div>
+  </div>
+
+  <div class="sh"><div class="sht">🥡 Meal Prep So + Mi</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">Hähnchen + Reis + Gemüse</div><div class="rs">Klassiker · hohes Protein · Mikronährstoffe</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Mageres Hackfleisch + Süßkartoffel</div><div class="rs">Gute Fette + komplexe Carbs</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Lachs / Fisch + Nudeln</div><div class="rs">Omega-3 + Carbs · Entzündungen ↓</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Thunfisch Salat Variante</div><div class="rs">Leicht · für heiße Tage · schnell</div></div></div>
+  </div>
+
+  <div class="sh"><div class="sht">💊 Supplements</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">Biotin</div><div class="rs">Haare · Haut · Nägel</div></div><div class="rr g">morgens</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Zinc</div><div class="rs">Testosteron · Haut · Immunsystem</div></div><div class="rr o">abends nüchtern</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Protein Shake</div><div class="rs">Proteinziel sichern</div></div><div class="rr b">post-workout</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Magnesium Glycinat ⭐</div><div class="rs">Schlafqualität ↑ · Muskelregeneration · 300mg abends</div></div><div class="rr p">empfohlen</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Vitamin D3 + K2 ⭐</div><div class="rs">Kaum Sonne → Mangel wahrscheinlich · Hormone + Immunsystem</div></div><div class="rr p">empfohlen</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Omega-3 ⭐</div><div class="rs">Gehirn · Entzündungen ↓ · Haut · wenn wenig Fisch</div></div><div class="rr p">empfohlen</div></div>
+  </div>
+
+  <div class="sh"><div class="sht">📊 Montag Check-in</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">−0,5 kg oder mehr</div><div class="rs">Aktivität + Ernährung funktioniert</div></div><div class="rr g">Weiter ✓</div></div>
+    <div class="ri"><div class="rl"><div class="rn">±0 kg über 2 Wochen</div><div class="rs">Aktivität erhöhen (mehr Schritte) ODER −100 kcal</div></div><div class="rr o">Anpassen</div></div>
+    <div class="ri"><div class="rl"><div class="rn">+0,5 kg oder mehr</div><div class="rs">Tracking prüfen · Fett + Alkohol kontrollieren</div></div><div class="rr r">Prüfen</div></div>
+  </div>
+  <div class="note">Gewicht schwankt täglich ±1 kg. Trend über 2–3 Wochen bewerten. Muskelaufbau kann Fettverlust auf der Waage verdecken.</div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ══════════ MIND ══════════ -->
+<div id="s-mind" class="scr">
+
+  <div class="sh"><div class="sht">😴 Schlaf-System</div><div class="shl"></div></div>
+  <div class="note y">Aktuell: nach Mitternacht. Schlechter Schlaf = Cortisol ↑ · Fettabbau ↓ · Motivation ↓. Ziel: 23:00 Uhr schrittweise.</div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">Schlafziel: 23:00–23:30 Uhr</div><div class="rs">Jede Woche 15 min früher · 00:30→00:00→23:30→23:00</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Handy weg ab 21:30 Uhr</div><div class="rs">Blaulicht blockiert Melatonin · Blue Light Brille optional</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Zimmer dunkel + kühl 17–19°C</div><div class="rs">Dunkelheit = Melatonin ↑ · Kühle = Tiefschlaf ↑</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Kein Koffein nach 14:00 Uhr</div><div class="rs">Halbwertszeit ~6h · stört Tiefschlaf auch wenn du einschläfst</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Kein Alkohol vor Schlaf</div><div class="rs">Zerstört REM-Schlaf · wöchentlich reduzieren</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Magnesium Glycinat vor Schlaf</div><div class="rs">300mg · Nervensystem beruhigen · Einschlafzeit ↓</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">4-7-8 Breathing vor Schlaf</div><div class="rs">4s ein · 7s halten · 8s aus · Parasympathikus aktivieren</div></div></div>
+  </div>
+
+  <div class="sh"><div class="sht">🧘 Atemübungen & Meditation</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">Box Breathing — täglich 5 min</div><div class="rs">4s ein · 4s halten · 4s aus · 4s halten · morgens</div></div><div class="rr p">täglich</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Body Scan (abends 5 min)</div><div class="rs">Von Kopf bis Fuß · Spannung loslassen · Schlaf ↑</div></div><div class="rr" style="color:var(--muted2)">abends</div></div>
+    <div class="ri"><div class="rl"><div class="rn">App: Waking Up / Headspace</div><div class="rs">Geführte Sessions · 10 min/Tag · niedrige Einstiegshürde</div></div></div>
+  </div>
+
+  <div class="sh"><div class="sht">📓 Journaling</div><div class="shl"></div></div>
+  <div class="note t">5 min täglich schreiben reduziert Cortisol und verbessert Selbstwahrnehmung nachweislich. Kein perfektes Journal nötig.</div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">3 Dinge für die du dankbar bist</div><div class="rs">Morgens · 30s · verändert neuronale Muster nach 21 Tagen</div></div><div class="rr g">morgens</div></div>
+    <div class="ri"><div class="rl"><div class="rn">1 Tagesintention</div><div class="rs">"Heute will ich..." · Fokus setzen bevor der Tag dich setzt</div></div><div class="rr g">morgens</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Tagesreflexion 2 min</div><div class="rs">Was lief gut? Was anders? Kein Urteilen · nur beobachten</div></div><div class="rr p">abends</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Wöchentliche Reflexion (So)</div><div class="rs">Größter Fortschritt? Was ändere ich? 5 min bewusstes Wachstum</div></div><div class="rr" style="color:var(--muted2)">Sonntag</div></div>
+  </div>
+
+  <div class="sh"><div class="sht">📵 Digital Detox</div><div class="shl"></div></div>
+  <div class="note r">Dopamin-Überstimulation durch Social Media = direkte Ursache für Prokrastination, Antriebslosigkeit, Unzufriedenheit. Das ist Neurobiologie, nicht Schwäche.</div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">Handy 1h nach Aufstehen meiden</div><div class="rs">Erste Stunde gehört dir · eigene Gedanken vor fremden Inhalten</div></div><div class="rr r">täglich</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Social Media max. 30 min/Tag</div><div class="rs">Timer in Einstellungen aktivieren · bewusst statt endlos</div></div><div class="rr r">täglich</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Benachrichtigungen deaktivieren</div><div class="rs">Nur Anrufe + wichtige Nachrichten · du entscheidest wann</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">1 handyfreier Abend/Woche</div><div class="rs">Buch · Spaziergang · Gespräch · Stille · Gehirn erholt sich</div></div><div class="rr" style="color:var(--muted2)">1×/Woche</div></div>
+  </div>
+
+  <div class="sh"><div class="sht">⚡ Prokrastination</div><div class="shl"></div></div>
+  <div class="note y">Prokrastination = Emotionsregulation, keine Faulheit. Du vermeidest das unangenehme Gefühl, nicht die Aufgabe. Das zu wissen verändert alles.</div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">2-Minuten-Regel</div><div class="rs">Unter 2 min → sofort. Keine Aufschiebelogik möglich.</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">5-Sekunden-Regel</div><div class="rs">5-4-3-2-1 starten. Gehirn kommt nicht zum Sabotieren.</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">1 Aufgabe pro Tag</div><div class="rs">Nicht 10 Ziele · eine Sache konsequent erledigen · das reicht</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Umgebung gestalten</div><div class="rs">Handy in anderen Raum · Tisch aufräumen · Zimmer ordnen</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Gaming erst nach Pflicht</div><div class="rs">Klare Grenze: Belohnung kommt nach, nicht vor der Arbeit</div></div></div>
+  </div>
+
+  <div class="sh"><div class="sht">🌱 Sinn & Wachstum</div><div class="shl"></div></div>
+  <div class="note p">Du bist nicht zufrieden mit dir selbst. Kein klares Warum. Das ist der Kern — alles andere ist Symptom. Hier wird das Fundament gebaut.</div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">Dein Warum definieren</div><div class="rs">Für wen? Was willst du in 5 Jahren über dich sagen können?</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">1 Sachbuch pro Monat</div><div class="rs">Start: "Atomic Habits" (Clear) → "Can't Hurt Me" (Goggins)</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Wöchentlicher Podcast</div><div class="rs">Huberman Lab · Lex Fridman · beim Kochen/Spazieren</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">1 Pomodoro Thesis täglich</div><div class="rs">25 min · kein Handy · Konsistenz schlägt Intensität</div></div></div>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ══════════ BEAUTY ══════════ -->
+<div id="s-beauty" class="scr">
+
+  <div class="sh"><div class="sht">☀️ Morning Skincare</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="sstep"><div class="snum">1</div><div><div class="sn">Cleanser</div><div class="sd">60s einmassieren · lauwarm abspülen</div></div></div>
+    <div class="sstep"><div class="snum">2</div><div><div class="sn">Niacinamide 10%</div><div class="sd">3–4 Tropfen · Poren · Sebum · Hauttönung · 30s einziehen</div></div></div>
+    <div class="sstep"><div class="snum">3</div><div><div class="sn">Moisturizer</div><div class="sd">Leichte Textur · Feuchtigkeitsbarriere</div></div></div>
+    <div class="sstep"><div class="snum">4</div><div><div class="sn">SPF 50</div><div class="sd">Letzter Schritt · täglich · mind. halber TL · UV = Anti-Aging #1</div></div></div>
+  </div>
+
+  <div class="sh"><div class="sht">🌙 Evening Skincare</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="sstep"><div class="snum">1</div><div><div class="sn">Öl-Cleanser</div><div class="sd">SPF + Schmutz lösen · auf trockene Haut</div></div></div>
+    <div class="sstep"><div class="snum">2</div><div><div class="sn">Wasser-Cleanser</div><div class="sd">Tiefenreinigung</div></div></div>
+    <div class="sstep"><div class="snum">3</div><div><div class="sn">Niacinamide 10%</div><div class="sd">Gleicher Ablauf wie morgens</div></div></div>
+    <div class="sstep"><div class="snum">4</div><div><div class="sn">Moisturizer (Nacht)</div><div class="sd">Kann reichhaltiger sein · Regeneration über Nacht</div></div></div>
+    <div class="sstep"><div class="snum">5</div><div><div class="sn">Lip Balm</div><div class="sd">Täglich vor dem Schlafen</div></div></div>
+  </div>
+
+  <div class="sh"><div class="sht">✨ Weekly Treatments</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">BHA Peeling</div><div class="rs">Di + Fr · nach Reinigung · 5–10 min · dann Moisturizer</div></div><span class="badge bb">2×/Woche</span></div>
+    <div class="ri"><div class="rl"><div class="rn">Gua Sha</div><div class="rs">Mi + Fr + So · Öl vorher · von innen nach außen · 5–10 min</div></div><span class="badge bg">3×/Woche</span></div>
+    <div class="ri"><div class="rl"><div class="rn">Whitening Strips</div><div class="rs">Do + Sa · nicht nach Essen · 30 min einwirken</div></div><span class="badge bo">2×/Woche</span></div>
+    <div class="ri"><div class="rl"><div class="rn">Haare waschen</div><div class="rs">Mi + Fr + So</div></div><span class="badge bgr">3×/Woche</span></div>
+  </div>
+
+  <div class="sh"><div class="sht">🦷 Zahnpflege</div><div class="shl"></div></div>
+  <div class="note r">Aktuell: gelegentlich. Zähne sind täglich sichtbar — direkter Einfluss auf ersten Eindruck und Ausstrahlung.</div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">Zähne putzen 2× täglich</div><div class="rs">Morgens + abends · elektrisch · 2 min</div></div><div class="rr r">täglich</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Zungenreiniger</div><div class="rs">Morgens · Bakterien · Atemfrische</div></div><div class="rr r">täglich</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Flossen</div><div class="rs">Abends · Zahnfleisch + Kariesprävention</div></div><div class="rr r">täglich</div></div>
+  </div>
+
+  <div class="sh"><div class="sht">🎯 Looksmaxxing</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">Mewing täglich</div><div class="rs">Zunge an Gaumen · Nasenatmung</div></div><span class="badge bg">aktiv</span></div>
+    <div class="ri"><div class="rl"><div class="rn">Skincare täglich</div><div class="rs">Morgens + abends</div></div><span class="badge bo">reaktivieren</span></div>
+    <div class="ri"><div class="rl"><div class="rn">Movement Quality / Haltung</div><div class="rs">Täglich 10 min · Physio empfohlen</div></div><span class="badge bb">in Arbeit</span></div>
+    <div class="ri"><div class="rl"><div class="rn">Fettverlust 73→69 kg</div><div class="rs">Durch Aktivität · V-Form sichtbar</div></div><span class="badge bb">in Arbeit</span></div>
+    <div class="ri"><div class="rl"><div class="rn">Zahnpflege täglich</div><div class="rs">2× putzen + Whitening Do/Sa</div></div><span class="badge bo">reaktivieren</span></div>
+    <div class="ri"><div class="rl"><div class="rn">Kaltdusche (Aufbau)</div><div class="rs">30s kalt am Ende starten · Dopamin ↑</div></div><span class="badge bgr">starten</span></div>
+    <div class="ri"><div class="rl"><div class="rn">Style nach Zielgewicht</div><div class="rs">V-Form betonen · Garderobe anpassen</div></div><span class="badge bgr">ausstehend</span></div>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ══════════ SPRACHEN ══════════ -->
+<div id="s-sprachen" class="scr">
+
+  <div class="sh"><div class="sht">🌍 Deine 2 Sprachen</div><div class="shl"></div></div>
+  <div class="note pk">Empfehlung basierend auf deinen Zielen: Karriere · Reisen · Kultur · Romantik · Herausforderung</div>
+
+  <div class="lang-card">
+    <div class="lang-hdr">
+      <div class="lang-flag">🇪🇸</div>
+      <div>
+        <div class="lang-title">Spanisch</div>
+        <div style="font-size:12px;color:var(--muted)">Sprache #1 — Einstieg</div>
+      </div>
+      <span class="badge bg">Priorität 1</span>
+    </div>
+    <div class="ri"><div class="rl"><div class="rn">Warum Spanisch?</div><div class="rs">580 Mio. Sprecher · 20+ Länder · Europa + Lateinamerika · Karriere · leicht für Deutsche</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Wo nutzen?</div><div class="rs">Spanien · Südamerika · internationale Unternehmen · Reisen</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Lernzeit bis B1</div><div class="rs">~300–400h · ~10 min/Tag = 2–3 Jahre · aktiv sprechen früher möglich</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Start: Duolingo</div><div class="rs">Täglich 10 min · streak aufbauen · Vokabular zuerst</div></div><div class="rr g">täglich</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Nächster Schritt</div><div class="rs">Anki (Karteikarten) · spanische Serien (mit Untertiteln) · HelloTalk (Sprachpartner)</div></div></div>
+  </div>
+
+  <div class="lang-card">
+    <div class="lang-hdr">
+      <div class="lang-flag">🇯🇵</div>
+      <div>
+        <div class="lang-title">Japanisch</div>
+        <div style="font-size:12px;color:var(--muted)">Sprache #2 — Herausforderung</div>
+      </div>
+      <span class="badge bp">Priorität 2</span>
+    </div>
+    <div class="ri"><div class="rl"><div class="rn">Warum Japanisch?</div><div class="rs">Japan + Südostasien Business · Kultur · persönliche Herausforderung · einzigartige Fähigkeit</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Wo nutzen?</div><div class="rs">Japan · Malaysia hat japanische Business-Community · globale Unternehmen</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Lernzeit bis N5 (Grundlagen)</div><div class="rs">~150h Hiragana + Katakana + Basis · machbar in 6–12 Monaten mit 10 min/Tag</div></div></div>
+    <div class="ri"><div class="rl"><div class="rn">Start: Hiragana lernen</div><div class="rs">46 Zeichen · 2–3 Wochen · Duolingo Japanisch oder "Tofugu Hiragana Guide"</div></div><div class="rr p">Woche 1</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Nächster Schritt</div><div class="rs">Anki (Kanji) · JapanesePod101 · Anime mit JP Untertiteln</div></div></div>
+  </div>
+
+  <div class="sh"><div class="sht">📅 Lern-Routine</div><div class="shl"></div></div>
+  <div class="note pk">Regel: Täglich 10 min reichen. Nie 2 Tage auslassen. Streak ist wichtiger als Session-Länge.</div>
+  <div class="card">
+    <div class="ri"><div class="rl"><div class="rn">Morgens: Duolingo (10 min)</div><div class="rs">Abwechselnd Spanisch / Japanisch · nach Morgenroutine</div></div><div class="rr pk">täglich</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Unterwegs: Anki (5 min)</div><div class="rs">Beim Warten · in der Uni · Vokabeln wiederholen · kein Setup nötig</div></div><div class="rr" style="color:var(--muted2)">täglich</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Wöchentlich: 1 spanische Serie/Episode</div><div class="rs">Netflix: Money Heist · Club de Cuervos · mit SP Untertiteln</div></div><div class="rr" style="color:var(--muted2)">1×/Woche</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Wöchentlich: 1 Anime/Episode</div><div class="rs">JP Untertitel · Haikyuu / Attack on Titan · passives Hören</div></div><div class="rr" style="color:var(--muted2)">1×/Woche</div></div>
+    <div class="ri"><div class="rl"><div class="rn">Monatlich: Sprachpartner suchen</div><div class="rs">HelloTalk / Tandem App · echte Gespräche beschleunigen massiv</div></div><div class="rr" style="color:var(--muted2)">monatlich</div></div>
+  </div>
+
+  <div class="sh"><div class="sht">📊 Sprachziele</div><div class="shl"></div></div>
+  <div class="card">
+    <div class="pi"><div class="pt"><span class="pn">🇪🇸 Spanisch — Grundlagen A1</span><span class="pp">0%</span></div><div class="pb"><div class="pf pk" style="width:0%"></div></div></div>
+    <div class="pi"><div class="pt"><span class="pn">🇪🇸 Spanisch — A2 Konversation</span><span class="pp">0%</span></div><div class="pb"><div class="pf pk" style="width:0%"></div></div></div>
+    <div class="pi"><div class="pt"><span class="pn">🇯🇵 Japanisch — Hiragana komplett</span><span class="pp">0%</span></div><div class="pb"><div class="pf p" style="width:0%"></div></div></div>
+    <div class="pi"><div class="pt"><span class="pn">🇯🇵 Japanisch — N5 Grundlagen</span><span class="pp">0%</span></div><div class="pb"><div class="pf p" style="width:0%"></div></div></div>
+  </div>
+
+  <div class="spacer"></div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nb active" onclick="showS('heute',this)"><div class="nbi">✅</div><div class="nbl">Heute</div></div>
+  <div class="nb" onclick="showS('koerper',this)"><div class="nbi">🏋️</div><div class="nbl">Körper</div></div>
+  <div class="nb" onclick="showS('ernaehrung',this)"><div class="nbi">🥗</div><div class="nbl">Essen</div></div>
+  <div class="nb" onclick="showS('mind',this)"><div class="nbi">🧠</div><div class="nbl">Mind</div></div>
+  <div class="nb" onclick="showS('beauty',this)"><div class="nbi">✨</div><div class="nbl">Beauty</div></div>
+  <div class="nb" onclick="showS('sprachen',this)"><div class="nbi">🌍</div><div class="nbl">Sprachen</div></div>
+</nav>
+</div>
+
+<script>
+const DAYS=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+const MONTHS=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+const now=new Date();
+const todayKey=now.toISOString().split('T')[0];
+const dayIdx=now.getDay();
+document.getElementById('hdate').innerHTML=DAYS[dayIdx]+'<br>'+now.getDate()+'. '+MONTHS[now.getMonth()];
+const dayMap={1:'mo',2:'di',3:'mi',4:'do',5:'fr',6:'sa',0:'so'};
+const te=document.getElementById('wd-'+dayMap[dayIdx]);
+if(te)te.classList.add('today');
+
+const quotes=[
+  {t:"Du wirst nicht das, was du dir wünschst. Du wirst das, was du täglich tust.",a:"— James Clear"},
+  {t:"Disziplin ist Freiheit. Wer sich selbst beherrscht, wird von nichts anderem beherrscht.",a:"— Jocko Willink"},
+  {t:"Der beste Zeitpunkt war vor 20 Jahren. Der zweitbeste ist jetzt.",a:"— Chinesisches Sprichwort"},
+  {t:"Kleine Handlungen, täglich wiederholt, formen den Charakter eines Menschen.",a:"— Aristoteles"},
+  {t:"Vergleiche dich nicht mit anderen. Vergleiche dich mit dem, der du gestern warst.",a:"— Jordan B. Peterson"},
+  {t:"Die Qualität deiner Gewohnheiten ist die Qualität deines Lebens.",a:"—"},
+  {t:"Du bist nicht deine Vergangenheit. Du bist das, was du heute entscheidest zu sein.",a:"—"},
+  {t:"Wachstum passiert nicht in der Komfortzone. Aber es beginnt mit dem ersten Schritt.",a:"—"},
+  {t:"Jede Sprache ist ein Fenster in eine andere Welt.",a:"— Frank Smith"},
+  {t:"Der Körper leidet, wenn der Geist leidet. Der Geist blüht, wenn der Körper gepflegt wird.",a:"—"},
+  {t:"Energie fließt dorthin, wo Aufmerksamkeit geht.",a:"—"},
+  {t:"Das Geheimnis des Vorankommens ist das Anfangen.",a:"— Mark Twain"},
+  {t:"Authentisch zu sein ist die mutigste Form des Lebens.",a:"— Brené Brown"},
+  {t:"Der Mann, der einen Berg versetzt, beginnt damit, kleine Steine wegzutragen.",a:"— Konfuzius"},
+];
+const q=quotes[Math.floor(Math.abs(new Date(todayKey).getTime()/86400000))%quotes.length];
+document.getElementById('q-text').textContent='"'+q.t+'"';
+document.getElementById('q-author').textContent=q.a;
+
+const extras={
+  1:[{m:'Gua Sha (abends)',s:'Öl vorher · von innen nach außen · Lymphabfluss · 5–10 min'},{m:'Montag Wiegen',s:'Nüchtern · Wochentrend auswerten'},{m:'E-Bike zur Uni?',s:'Statt Transport · frische Luft + Kalorien verbrennen'}],
+  2:[{m:'BHA Peeling (abends)',s:'Nach Reinigung · 5–10 min · dann Moisturizer'},{m:'Laufen nach Pull-Session',s:'20–25 min Zone 2 · Ausdauer aufbauen'},{m:'Spanisch 10 min',s:'Duolingo Streak halten'}],
+  3:[{m:'Gua Sha',s:'Mi/Fr/So Ritual'},{m:'Haare waschen',s:'Mittwoch'},{m:'Meal Prep kochen',s:'Für Do–Sa · portionieren + beschriften'},{m:'Japanisch 10 min',s:'Hiragana üben'}],
+  4:[{m:'BHA Peeling + Whitening Strip',s:'BHA: 5–10 min · Whitening: 30 min'},{m:'Uni 10:00 Uhr',s:'Zu Fuß gehen · 10 min · kein Transport'},{m:'1 Pomodoro Thesis',s:'Direkt nach Uni · 25 min · fertig werden'}],
+  5:[{m:'Gua Sha',s:'Mi/Fr/So Ritual'},{m:'Haare waschen',s:'Freitag'},{m:'Wochenplan skizzieren',s:'5 min · 3 wichtigste Dinge nächste Woche'}],
+  6:[{m:'Whitening Strip',s:'30 min · nicht essen/trinken dabei'},{m:'Optionaler Tag D',s:'Power + Intervall · nur wenn Energie da'},{m:'Sprachen-Session',s:'Länger üben als usual · Wochenende nutzen'}],
+  0:[{m:'Gua Sha',s:'Mi/Fr/So Ritual'},{m:'Haare waschen',s:'Sonntag'},{m:'Meal Prep Mo–Mi',s:'Kochen + portionieren'},{m:'Wöchentliche Reflexion',s:'Was war gut? Was ändere ich? 5 min'}]
+};
+const ec=document.getElementById('daily-extras');
+const de=extras[dayIdx]||[];
+if(!de.length){ec.innerHTML='<div style="padding:14px;font-size:13px;color:var(--muted)">Keine speziellen Extras heute.</div>';}
+else{de.forEach((e,i)=>{const id='ex'+i;ec.innerHTML+=`<div class="ci" onclick="tc(this,'${id}')" id="${id}"><div class="chk"></div><div class="cw"><div class="cm">${e.m}</div><div class="cs">${e.s}</div></div></div>`;});}
+
+const SK='fre_'+todayKey;
+let checks={};
+try{const s=localStorage.getItem(SK);checks=s?JSON.parse(s):{};for(let k of Object.keys(localStorage)){if(k.startsWith('fre_')&&k!==SK&&k!=='fre_streak'&&k!=='fre_lastday')localStorage.removeItem(k);}}catch(e){}
+
+function save(){try{localStorage.setItem(SK,JSON.stringify(checks));}catch(e){}}
+function restoreAll(){for(const[id,done] of Object.entries(checks)){const el=document.getElementById(id);if(el&&done)el.classList.add('done');}updateRing();}
+function tc(el,id){el.classList.toggle('done');checks[id]=el.classList.contains('done');save();updateRing();}
+
+const dailyIds=['m1','m2','m3','m4','m5','m6','m7','m8','m9','m10','mf1','mf2','mf3','mf4','t1','t2','t3','t4','t5','t6','t7','t8','a1','a2','a3','a4','a5','a6','a7','a8',...(extras[dayIdx]||[]).map((_,i)=>'ex'+i)];
+
+function updateRing(){
+  const total=dailyIds.length;let done=0;
+  dailyIds.forEach(id=>{const el=document.getElementById(id);if(el&&el.classList.contains('done'))done++;});
+  const pct=total>0?Math.round(done/total*100):0;
+  const circ=175.9;
+  document.getElementById('ring-c').style.strokeDashoffset=circ-(pct/100*circ);
+  document.getElementById('ring-pct').textContent=pct+'%';
+  document.getElementById('ring-sub').textContent=done+' von '+total+' erledigt';
+  try{
+    let streak=parseInt(localStorage.getItem('fre_streak')||'0');
+    const lastDay=localStorage.getItem('fre_lastday')||'';
+    const yesterday=new Date(now);yesterday.setDate(yesterday.getDate()-1);
+    const yKey=yesterday.toISOString().split('T')[0];
+    if(pct===100&&lastDay!==todayKey){streak=lastDay===yKey?streak+1:1;localStorage.setItem('fre_streak',streak);localStorage.setItem('fre_lastday',todayKey);}
+    const sd=document.getElementById('streak-display');
+    if(streak>0)sd.innerHTML=`<span style="font-size:12px;color:var(--orange);font-weight:700">🔥 ${streak} Tag${streak>1?'e':''} in Folge</span>`;
+  }catch(e){}
+}
+
+function showS(name,btn){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('s-'+name).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('s-'+name).scrollTop=0;
+}
+function tS(id){document.getElementById(id).classList.toggle('open');}
+restoreAll();
+</script>
+</body>
+</html>
