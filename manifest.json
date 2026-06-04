@@ -1,0 +1,26 @@
+{
+  "name": "Frederik — Life OS",
+  "short_name": "Life OS",
+  "description": "Dein persönliches Life OS – Habits, Training, Glow Up, Fortschritt & Lumi.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "health", "lifestyle"],
+  "lang": "de"
+}
